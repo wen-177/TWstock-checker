@@ -1,0 +1,7 @@
+streamlit
+pandas
+ta
+yfinance
+plotly
+requests
+FinMind
