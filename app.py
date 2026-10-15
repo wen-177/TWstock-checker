@@ -185,15 +185,15 @@ def resolve_taiwan_stock(user_input, stock_dict):
 
 
 def fetch_stock_data(stock_id, market_type="TW"):
-    stock_id = stock_id.strip()
+    stock_id = str(stock_id).strip()
     df = pd.DataFrame()
     source = None
 
-    # 嘗試 1: 使用 FinMind REST API 直接抓取（不需 import FinMind.data）
+    # 嘗試 1: FinMind API Direct
     try:
         start_date = (pd.Timestamp.now() - pd.Timedelta(days=220)).strftime('%Y-%m-%d')
         url_fm = f"https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockPrice&data_id={stock_id}&start_date={start_date}"
-        res = requests.get(url_fm, timeout=6)
+        res = requests.get(url_fm, timeout=5)
         if res.status_code == 200:
             raw_data = res.json().get("data", [])
             if raw_data:
@@ -207,14 +207,23 @@ def fetch_stock_data(stock_id, market_type="TW"):
     except Exception:
         pass
 
-    # 嘗試 2: Yahoo Finance (雙重嘗試 .TW 與 .TWO)
+    # 嘗試 2: Yahoo Finance (帶 Custom User-Agent 避免 Cloud IP 被拒絕)
     if df.empty:
         suffixes = [".TW", ".TWO"] if market_type == "TW" else [".TWO", ".TW"]
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        }
         for suffix in suffixes:
             try:
                 ticker = f"{stock_id}{suffix}"
-                yf_df = yf.Ticker(ticker).history(period="8m")
-                if not yf_df.empty and len(yf_df) >= 10:
+                # 建立偽裝 Session 避開 Cloud 阻擋
+                session = requests.Session()
+                session.headers.update(headers)
+                
+                yf_ticker = yf.Ticker(ticker, session=session)
+                yf_df = yf_ticker.history(period="8m")
+                
+                if not yf_df.empty and len(yf_df) >= 5:
                     df = yf_df.reset_index()
                     if 'Date' in df.columns and hasattr(df['Date'].dt, 'tz_localize'):
                         df['Date'] = df['Date'].dt.tz_localize(None)
@@ -223,6 +232,41 @@ def fetch_stock_data(stock_id, market_type="TW"):
             except Exception:
                 pass
 
+    # 嘗試 3: 證交所 (TWSE) 官方日成交資訊 API 備援 (上市專用)
+    if df.empty:
+        try:
+            url_twse = f"https://www.twse.com.tw/exchangeReport/STOCK_DAY?response=json&stockNo={stock_id}"
+            res = requests.get(url_twse, timeout=5)
+            if res.status_code == 200 and res.json().get('stat') == 'OK':
+                data = res.json().get('data', [])
+                fields = res.json().get('fields', [])
+                if data:
+                    temp_df = pd.DataFrame(data, columns=fields)
+                    # 轉化民國年與格式
+                    parsed_rows = []
+                    for _, row in temp_df.iterrows():
+                        date_parts = row[0].split('/')
+                        if len(date_parts) == 3:
+                            year = int(date_parts[0]) + 1911
+                            dt_str = f"{year}-{date_parts[1]}-{date_parts[2]}"
+                            close_p = float(str(row[6]).replace(',', ''))
+                            open_p = float(str(row[3]).replace(',', ''))
+                            high_p = float(str(row[4]).replace(',', ''))
+                            low_p = float(str(row[5]).replace(',', ''))
+                            vol = float(str(row[1]).replace(',', ''))
+                            parsed_rows.append({
+                                'Date': pd.to_datetime(dt_str),
+                                'Open': open_p, 'High': high_p,
+                                'Low': low_p, 'Close': close_p,
+                                'Volume': vol
+                            })
+                    if parsed_rows:
+                        df = pd.DataFrame(parsed_rows)
+                        source = "TWSE Official API"
+        except Exception:
+            pass
+
+    # 資料清理與格式統一
     if not df.empty:
         for col in ['Open', 'High', 'Low', 'Close']:
             df[col] = df[col].astype(float)
