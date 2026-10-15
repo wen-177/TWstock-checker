@@ -4,4 +4,4 @@ ta
 yfinance
 plotly
 requests
-FinMind
+finmind
