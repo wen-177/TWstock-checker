@@ -4,4 +4,3 @@ ta
 yfinance
 plotly
 requests
-finmind
