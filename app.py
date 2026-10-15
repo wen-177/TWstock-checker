@@ -4,7 +4,6 @@ import ta
 import yfinance as yf
 import plotly.graph_objects as go
 import requests
-from FinMind.data import DataLoader
 
 # 頁面基本設定
 st.set_page_config(page_title="台股單股快速健檢", page_icon="📊", layout="wide")
@@ -190,29 +189,32 @@ def fetch_stock_data(stock_id, market_type="TW"):
     df = pd.DataFrame()
     source = None
 
-    # 嘗試 1: FinMind
+    # 嘗試 1: 使用 FinMind REST API 直接抓取（不需 import FinMind.data）
     try:
-        dl = DataLoader()
-        start_date = (pd.Timestamp.now() - pd.Timedelta(days=180)).strftime('%Y-%m-%d')
-        raw_df = dl.taiwan_stock_daily(stock_id=stock_id, start_date=start_date)
-        if not raw_df.empty:
-            df = raw_df.rename(columns={
-                'open': 'Open', 'max': 'High', 'min': 'Low',
-                'close': 'Close', 'trading_turnover': 'Volume'
-            })
-            df['Date'] = pd.to_datetime(df['date'])
-            source = "FinMind"
+        start_date = (pd.Timestamp.now() - pd.Timedelta(days=220)).strftime('%Y-%m-%d')
+        url_fm = f"https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockPrice&data_id={stock_id}&start_date={start_date}"
+        res = requests.get(url_fm, timeout=6)
+        if res.status_code == 200:
+            raw_data = res.json().get("data", [])
+            if raw_data:
+                raw_df = pd.DataFrame(raw_data)
+                df = raw_df.rename(columns={
+                    'open': 'Open', 'max': 'High', 'min': 'Low',
+                    'close': 'Close', 'trading_turnover': 'Volume'
+                })
+                df['Date'] = pd.to_datetime(df['date'])
+                source = "FinMind API"
     except Exception:
         pass
 
-    # 嘗試 2: Yahoo Finance
+    # 嘗試 2: Yahoo Finance (雙重嘗試 .TW 與 .TWO)
     if df.empty:
-        suffix_list = [".TW", ".TWO"] if market_type == "TW" else [".TWO", ".TW"]
-        for suffix in suffix_list:
+        suffixes = [".TW", ".TWO"] if market_type == "TW" else [".TWO", ".TW"]
+        for suffix in suffixes:
             try:
                 ticker = f"{stock_id}{suffix}"
-                yf_df = yf.Ticker(ticker).history(period="6m")
-                if not yf_df.empty:
+                yf_df = yf.Ticker(ticker).history(period="8m")
+                if not yf_df.empty and len(yf_df) >= 10:
                     df = yf_df.reset_index()
                     if 'Date' in df.columns and hasattr(df['Date'].dt, 'tz_localize'):
                         df['Date'] = df['Date'].dt.tz_localize(None)
