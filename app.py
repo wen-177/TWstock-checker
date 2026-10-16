@@ -25,33 +25,35 @@ st.markdown("""
         padding-right: 2rem;
     }
     
-    /* 🌟 新增：讓主標題 (h1) 置中 */
+    /* 讓主標題 (h1) 與副標題置中 */
     h1 {
         text-align: center;
     }
-
-    /* 🌟 新增：讓標題下方的說明文字置中 */
     .stCaptionContainer {
         text-align: center;
         display: flex;
         justify-content: center;
     }
     
-    /* 2. 卡片等高與背景圓角 */
+    /* 2. 強制所有頂部看板卡片「絕對等高與固定高度」，解決大小不一的問題 */
     div[data-testid="stColumn"] > div[data-testid="stVerticalBlock"] > div[data-testid="stElementContainer"] > div[data-testid="stBorderContainer"] {
-        height: 100%;
-        min-height: 220px;
+        height: 190px !important; /* 鎖定固定高度 */
+        max-height: 190px !important;
         background-color: var(--background-secondary-color);
         border-radius: 12px;
-        padding: 16px;
+        padding: 14px 16px !important;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; /* 讓上下內容自動撐開對齊 */
+        overflow: hidden;
     }
 
     /* 3. 頂部看板標題字體大小 */
     .card-label {
-        font-size: 22px !important;
+        font-size: 20px !important;
         font-weight: bold !important;
-        margin-bottom: 4px !important;
-        line-height: 1.3 !important;
+        margin-bottom: 2px !important;
+        line-height: 1.2 !important;
         color: var(--text-color);
     }
 
@@ -64,33 +66,34 @@ st.markdown("""
         color: var(--text-color);
     }
 
-    /* 5. 響應式手機排版修正 */
-    @media (max-width: 768px) {
-        .block-container {
-            padding-left: 0.8rem;
-            padding-right: 0.8rem;
-        }
-        div[data-testid="stColumn"] > div[data-testid="stVerticalBlock"] > div[data-testid="stElementContainer"] > div[data-testid="stBorderContainer"] {
-            min-height: auto;
-            margin-bottom: 10px;
-        }
-        /* 6. 強制精準放大輸入框標題與文字，絕不跑版 */
+    /* 5. 強制精準放大輸入框標題與文字 */
     div[data-testid="stTextInput"] label p {
-        font-size: 20px !important; /* 可依喜好調整大小，例如 18px 或 20px */
+        font-size: 20px !important;
         font-weight: bold !important;
         color: var(--text-color) !important;
     }
     
     div[data-testid="stTextInput"] input {
         font-size: 18px !important;
-        height: 48px !important; /* 確保輸入框高度與按鈕一致 */
+        height: 48px !important;
     }
 
-    /* 7. 確保右側按鈕高度與輸入框完美對齊 */
     div[data-testid="stColumn"] button {
         height: 48px !important;
-        margin-top: 2px !important; /* 微調垂直位置 */
+        margin-top: 2px !important;
     }
+
+    /* 6. 響應式手機排版修正 */
+    @media (max-width: 768px) {
+        .block-container {
+            padding-left: 0.8rem;
+            padding-right: 0.8rem;
+        }
+        div[data-testid="stColumn"] > div[data-testid="stVerticalBlock"] > div[data-testid="stElementContainer"] > div[data-testid="stBorderContainer"] {
+            height: auto !important; /* 手機版自動適應 */
+            min-height: 160px !important;
+            margin-bottom: 8px;
+        }
     }
 </style>
 """, unsafe_allow_html=True)
