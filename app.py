@@ -74,7 +74,7 @@ st.markdown("""
         }
     /*7. 🌟 調整 st.metric 上方標題文字的大小與粗細 */
     div[data-testid="stMetricLabel"] p {
-        font-size: 18px !important;    /* 這裡可以依喜好調整大小，例如 16px 或 20px */
+        font-size: 28px !important;    /* 這裡可以依喜好調整大小，例如 16px 或 20px */
         font-weight: bold !important;  /* 讓標題變粗體 */
     }
     }
