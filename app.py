@@ -50,7 +50,7 @@ st.markdown("""
 
     /* 3. 頂部看板標題字體大小 */
     .card-label {
-        font-size: 50px !important;
+        font-size: 10px !important;
         font-weight: bold !important;
         margin-bottom: 2px !important;
         line-height: 1.2 !important;
