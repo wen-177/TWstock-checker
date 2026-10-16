@@ -72,10 +72,15 @@ st.markdown("""
             min-height: auto;
             margin-bottom: 10px;
         }
-    /*7. 🌟 調整 st.metric 上方標題文字的大小與粗細 */
-    div[data-testid="stMetricLabel"] p {
-        font-size: 28px !important;    /* 這裡可以依喜好調整大小，例如 16px 或 20px */
-        font-weight: bold !important;  /* 讓標題變粗體 */
+    /*7. 🌟 精準控制 st.metric 的標題與數值大小 */
+    [data-testid="stMetricLabel"] {
+        font-size: 18px !important;    /* 調整「當前收盤價」、「健康度評分」的大小 */
+        font-weight: bold !important;  /* 設為粗體 */
+    }
+
+    [data-testid="stMetricValue"] {
+        font-size: 36px !important;    /* 調整下方數字的大小 */
+        font-weight: 800 !important;  /* 設為極粗體 */
     }
     }
 </style>
