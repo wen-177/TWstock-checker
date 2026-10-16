@@ -74,6 +74,23 @@ st.markdown("""
             min-height: auto;
             margin-bottom: 10px;
         }
+    /* 6. 強制精準放大輸入框標題與文字，絕不跑版 */
+    div[data-testid="stTextInput"] label p {
+        font-size: 20px !important; /* 可依喜好調整大小，例如 18px 或 20px */
+        font-weight: bold !important;
+        color: var(--text-color) !important;
+    }
+    
+    div[data-testid="stTextInput"] input {
+        font-size: 18px !important;
+        height: 48px !important; /* 確保輸入框高度與按鈕一致 */
+    }
+
+    /* 7. 確保右側按鈕高度與輸入框完美對齊 */
+    div[data-testid="stColumn"] button {
+        height: 48px !important;
+        margin-top: 2px !important; /* 微調垂直位置 */
+    }
     }
 </style>
 """, unsafe_allow_html=True)
