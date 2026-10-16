@@ -84,7 +84,13 @@ st.markdown("""
             min-height: auto;
             margin-bottom: 10px;
         }
-    
+    /* 6.🌟 新增：頂部看板數字的字型大小與樣式 */
+    .card-value {
+        font-size: 36px !important;  /* 數字大小（可自行修改像素，例如 32px 或 40px） */
+        font-weight: bold !important;
+        margin-top: 0px !important;
+        color: var(--text-color);
+    }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -318,17 +324,15 @@ def main():
             with card_col1:
                 with st.container(border=True):
                     st.markdown('<p class="card-label">當前收盤價</p>', unsafe_allow_html=True)
-                    st.title(f"${latest['Close']:.2f}")
+                    # 👇 改用自訂樣式的 HTML 顯示數字
+                    st.markdown(f'<p class="card-value">${latest["Close"]:.2f}</p>', unsafe_allow_html=True)
 
             with card_col2:
                 with st.container(border=True):
                     st.markdown('<p class="card-label">健康度評分</p>', unsafe_allow_html=True)
-                    if score >= 75:
-                        st.title(f"🟢 {score}分")
-                    elif score >= 50:
-                        st.title(f"🟡 {score}分")
-                    else:
-                        st.title(f"🔴 {score}分")
+                    # 👇 評分數字也可以一起用這個控制大小（或保留 st.title）
+                    score_emoji = "🟢" if score >= 75 else ("🟡" if score >= 50 else "🔴")
+                    st.markdown(f'<p class="card-value">{score_emoji} {score}分</p>', unsafe_allow_html=True)
 
             with card_col3:
                 with st.container(border=True):
@@ -339,17 +343,17 @@ def main():
                         f'</div>', 
                         unsafe_allow_html=True
                     )
-                    st.title(f"${buy_price}")
+                    st.markdown(f'<p class="card-value">${buy_price}</p>', unsafe_allow_html=True)
 
             with card_col4:
                 with st.container(border=True):
                     st.markdown('<p class="card-label">建議停利價 🎯</p>', unsafe_allow_html=True)
-                    st.title(f"${take_profit}")
+                    st.markdown(f'<p class="card-value">${take_profit}</p>', unsafe_allow_html=True)
 
             with card_col5:
                 with st.container(border=True):
                     st.markdown('<p class="card-label">建議停損價 🛑</p>', unsafe_allow_html=True)
-                    st.title(f"${stop_loss}")
+                    st.markdown(f'<p class="card-value">${stop_loss}</p>', unsafe_allow_html=True)
 
             st.write("---")
 
