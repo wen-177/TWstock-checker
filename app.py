@@ -56,7 +56,7 @@ st.markdown("""
     }
     /*🌟 新增：頂部看板數字的字型大小與樣式 */
     .card-value {
-        font-size: 50px !important;  /* 數字大小（可隨需求自行修改像素，例如 32px、40px） */
+        font-size: 30px !important;  /* 數字大小（可隨需求自行修改像素，例如 32px、40px） */
         font-weight: bold !important;  /* 讓數字粗體 */
         margin-top: 4px !important;
         color: var(--text-color);
