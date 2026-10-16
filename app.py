@@ -50,7 +50,7 @@ st.markdown("""
 
     /* 3. 頂部看板標題字體大小 */
     .card-label {
-        font-size: 24px !important;
+        font-size: 30px !important;
         font-weight: bold !important;
         margin-bottom: 2px !important;
         line-height: 1.2 !important;
@@ -96,7 +96,7 @@ st.markdown("""
         }
        /* 7. 頂部看板大數字專屬樣式 (數值大小可自行修改，例如 30px 或 36px) */
     .card-value {
-        font-size: 32px !important;
+        font-size: 40px !important;
         font-weight: bold !important;
         margin-top: 8px !important;
         margin-bottom: 0px !important;
