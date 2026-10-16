@@ -74,6 +74,16 @@ st.markdown("""
             min-height: auto;
             margin-bottom: 10px;
         }
+    /* 6. 調整輸入框上方標籤 (Label) 的字型大小 */
+    div[data-testid="stTextInput"] label p {
+        font-size: 18px !important; /* 數字可依需求自行放大或縮小 */
+        font-weight: bold !important;
+    }
+
+    /* 7. 調整輸入框內部輸入文字的字型大小 */
+    div[data-testid="stTextInput"] input {
+        font-size: 18px !important;
+    }
     }
 </style>
 """, unsafe_allow_html=True)
