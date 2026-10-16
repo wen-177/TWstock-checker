@@ -50,7 +50,7 @@ st.markdown("""
 
     /* 3. 頂部看板標題字體大小 */
     .card-label {
-        font-size: 10px !important;
+        font-size: 24px !important;
         font-weight: bold !important;
         margin-bottom: 2px !important;
         line-height: 1.2 !important;
@@ -59,7 +59,7 @@ st.markdown("""
 
     /* 4. 健檢診斷細節文字大小 */
     .reason-text {
-        font-size: 20px !important;
+        font-size: 18px !important;
         font-weight: 500 !important;
         margin-bottom: 12px !important;
         line-height: 1.6 !important;
