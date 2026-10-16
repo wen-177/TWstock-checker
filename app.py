@@ -76,7 +76,7 @@ st.markdown("""
         }
     /* 6. 強制精準放大輸入框標題與文字，絕不跑版 */
     div[data-testid="stTextInput"] label p {
-        font-size: 26px !important; /* 可依喜好調整大小，例如 18px 或 20px */
+        font-size: 10px !important; /* 可依喜好調整大小，例如 18px 或 20px */
         font-weight: bold !important;
         color: var(--text-color) !important;
     }
