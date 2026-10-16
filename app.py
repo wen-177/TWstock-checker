@@ -74,16 +74,7 @@ st.markdown("""
             min-height: auto;
             margin-bottom: 10px;
         }
-    /* 6. 調整輸入框上方標籤 (Label) 的字型大小 */
-    div[data-testid="stTextInput"] label p {
-        font-size: 24px !important; /* 數字可依需求自行放大或縮小 */
-        font-weight: bold !important;
-    }
-
-    /* 7. 調整輸入框內部輸入文字的字型大小 */
-    div[data-testid="stTextInput"] input {
-        font-size: 20px !important;
-    }
+   
     }
 </style>
 """, unsafe_allow_html=True)
@@ -288,10 +279,13 @@ def main():
 
     col_input, col_btn = st.columns([4, 1])
     with col_input:
-        stock_input = st.text_input("輸入股票名稱或代號：", value="2330", placeholder="例如：2330、台積電、雷科、0050")
+        # 使用自訂 HTML 標籤來完美掌控字體大小 (例如調整為 20px)
+        st.markdown('<p style="font-size: 24px; font-weight: bold; margin-bottom: 6px;">輸入股票名稱或代號：</p>', unsafe_allow_html=True)
+        stock_input = st.text_input("", value="2330", placeholder="例如：2330、台積電、雷科、0050", label_visibility="collapsed")
     with col_btn:
         st.write(" ")
-        st.write(" ")
+        # 調整按鈕與輸入框對齊
+        st.markdown('<div style="margin-top: 6px;"></div>', unsafe_allow_html=True)
         search_btn = st.button("🔍 開始健檢", use_container_width=True)
 
     if search_btn or stock_input:
