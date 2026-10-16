@@ -139,6 +139,10 @@ def load_all_taiwan_stocks():
 def resolve_taiwan_stock(user_input, stock_dict):
     clean_input = user_input.strip()
     
+    # 🔍 【除錯專用】：如果找不到，把使用者輸入跟前 5 筆字典內容印出來看
+    if clean_input not in stock_dict and not clean_input.isdigit():
+        st.warning(f"⚠️ 找不到 '{clean_input}'。目前總表共有 {len(stock_dict)} 筆資料。前幾筆名稱範例：{list(stock_dict.keys())[:5]}")
+    
     if clean_input.isdigit():
         name = next((k for k, v in stock_dict.items() if v == clean_input and not k.isdigit()), clean_input)
         return clean_input, name
@@ -150,13 +154,6 @@ def resolve_taiwan_stock(user_input, stock_dict):
     for name, code in stock_dict.items():
         if not name.isdigit() and (clean_input in name or name in clean_input):
             return code, name
-
-    simplified_input = clean_input.replace("臺灣", "").replace("台灣", "").replace("台", "")
-    for name, code in stock_dict.items():
-        if not name.isdigit():
-            simplified_name = name.replace("臺灣", "").replace("台灣", "").replace("台", "")
-            if simplified_input and (simplified_input in simplified_name or simplified_name in simplified_input):
-                return code, name
 
     return clean_input, clean_input
 
