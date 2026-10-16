@@ -25,7 +25,7 @@ st.markdown("""
         padding-right: 2rem;
     }
     
-    /* 讓主標題 (h1) 與副標題置中 */
+    /* 2. 讓主標題 (h1) 與副標題置中 */
     h1 {
         text-align: center;
     }
@@ -35,38 +35,16 @@ st.markdown("""
         justify-content: center;
     }
     
-    /* 2. 強制所有頂部看板卡片「絕對等高與固定高度」，解決大小不一的問題 */
+    /* 3. 卡片等高與背景圓角 */
     div[data-testid="stColumn"] > div[data-testid="stVerticalBlock"] > div[data-testid="stElementContainer"] > div[data-testid="stBorderContainer"] {
-        height: 190px !important; /* 鎖定固定高度 */
-        max-height: 190px !important;
+        height: 100%;
+        min-height: 160px;
         background-color: var(--background-secondary-color);
         border-radius: 12px;
-        padding: 14px 16px !important;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between; /* 讓上下內容自動撐開對齊 */
-        overflow: hidden;
+        padding: 12px;
     }
 
-    /* 3. 頂部看板標題字體大小 */
-    .card-label {
-        font-size: 30px !important;
-        font-weight: bold !important;
-        margin-bottom: 2px !important;
-        line-height: 1.2 !important;
-        color: var(--text-color);
-    }
-
-    /* 4. 健檢診斷細節文字大小 */
-    .reason-text {
-        font-size: 18px !important;
-        font-weight: 500 !important;
-        margin-bottom: 12px !important;
-        line-height: 1.6 !important;
-        color: var(--text-color);
-    }
-
-    /* 5. 強制精準放大輸入框標題與文字 */
+    /* 4. 強制精準放大輸入框標題與文字（保留中） */
     div[data-testid="stTextInput"] label p {
         font-size: 20px !important;
         font-weight: bold !important;
@@ -78,6 +56,7 @@ st.markdown("""
         height: 48px !important;
     }
 
+    /* 5. 確保按鈕高度與輸入框對齊（保留中） */
     div[data-testid="stColumn"] button {
         height: 48px !important;
         margin-top: 2px !important;
@@ -90,18 +69,9 @@ st.markdown("""
             padding-right: 0.8rem;
         }
         div[data-testid="stColumn"] > div[data-testid="stVerticalBlock"] > div[data-testid="stElementContainer"] > div[data-testid="stBorderContainer"] {
-            height: auto !important; /* 手機版自動適應 */
-            min-height: 160px !important;
-            margin-bottom: 8px;
+            min-height: auto;
+            margin-bottom: 10px;
         }
-      /* 7. 頂部看板大數字專屬樣式 (字體放大 + 超粗體) */
-    .card-value {
-        font-size: 60px !important;       /* 數字改大一點 (原本可能是 32px) */
-        font-weight: 800 !important;      /* 調整為極粗體 */
-        margin-top: 6px !important;
-        margin-bottom: 0px !important;
-        color: var(--text-color);
-    }
     }
 </style>
 """, unsafe_allow_html=True)
