@@ -33,7 +33,7 @@ st.markdown("""
         padding: 16px;
     }
 
-    /* 3. 頂部看板標題字體大小 (可在此統一修改像素值) */
+    /* 3. 頂部看板標題字體大小 */
     .card-label {
         font-size: 22px !important;
         font-weight: bold !important;
@@ -42,7 +42,7 @@ st.markdown("""
         color: var(--text-color);
     }
 
-    /* 4. 健檢診斷細節文字大小 (可在此統一修改像素值) */
+    /* 4. 健檢診斷細節文字大小 */
     .reason-text {
         font-size: 20px !important;
         font-weight: 500 !important;
@@ -66,41 +66,32 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# --- 1. 載入全台股與 ETF 清單 (超時控制 + 快取) ---
+# --- 1. 從自建 CSV 總表快速讀取股票字典 ---
 @st.cache_data(ttl=86400, show_spinner=False)
 def load_all_taiwan_stocks():
     stock_dict = {}
     market_dict = {}
     
-    # 內建常態備援字典 (確保離線或 API 異常時仍能查到雷科、台積電等重點股)
-    backup_stocks = {
-        "雷科": "6207", "台積電": "2330", "鴻海": "2317", "聯發科": "2454", 
-        "廣達": "2382", "緯創": "3231", "技嘉": "2376", "長榮": "2603",
-        "陽明": "2609", "萬海": "2615", "富邦金": "2881", "國泰金": "2882",
-        "中信金": "2891", "玉山金": "2884", "兆豐金": "2886", "台新金": "2887",
-        "元大台灣50": "0050", "國泰永續高股息": "00878", "群益台灣精選高息": "00919",
-        "復華台灣科技優息": "00929", "元大高股息": "0056"
-    }
-    for name, code in backup_stocks.items():
-        stock_dict[name] = code
-        stock_dict[code] = code
-
-    # 1.1 使用 FinMind 全台股清單 API
     try:
-        url_finmind = "https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockInfo"
-        res = requests.get(url_finmind, timeout=2)
-        if res.status_code == 200:
-            data = res.json().get("data", [])
-            for item in data:
-                code = item.get("stock_id", "").strip()
-                name = item.get("stock_name", "").strip()
-                industry = item.get("industry_category", "")
-                if code and name:
-                    stock_dict[name] = code
-                    stock_dict[code] = code
-                    market_dict[code] = "TWO" if ("上櫃" in industry or "TPEx" in industry) else "TW"
+        # 直接讀取上傳的 stock_list.csv (需包含「代號」與「名稱」欄位)
+        df_stocks = pd.read_csv("stock_list.csv", dtype=str)
+        for _, row in df_stocks.iterrows():
+            code = str(row['代號']).strip()
+            name = str(row['名稱']).strip()
+            if code and name:
+                stock_dict[name] = code
+                stock_dict[code] = code
+                # 簡單市場別判斷：上櫃/興櫃或特定區段歸類為 TWO，其餘為 TW
+                market_dict[code] = "TWO" if code.startswith(('3', '4', '5', '6', '8')) and len(code) == 4 else "TW"
     except Exception:
-        pass
+        # 讀取失敗時的基礎備援，確保系統不崩潰
+        backup_stocks = {
+            "台積電": "2330", "鴻海": "2317", "雷科": "6207", "聯發科": "2454", "元大台灣50": "0050"
+        }
+        for name, code in backup_stocks.items():
+            stock_dict[name] = code
+            stock_dict[code] = code
+            market_dict[code] = "TWO" if code == "6207" else "TW"
 
     return stock_dict, market_dict
 
@@ -131,7 +122,7 @@ def resolve_taiwan_stock(user_input, stock_dict):
     return clean_input, clean_input
 
 
-# --- 3. 股票歷史數據抓取 (雙源 + 快取 + 瀏覽器 Header 偽裝) ---
+# --- 3. 股票歷史數據抓取 (FinMind + Yahoo Finance 雙源防護) ---
 @st.cache_data(ttl=3600, show_spinner=False)
 def fetch_stock_data(stock_id, market_type="TW"):
     stock_id = str(stock_id).strip()
@@ -156,7 +147,7 @@ def fetch_stock_data(stock_id, market_type="TW"):
     except Exception:
         pass
 
-    # 嘗試 2: Yahoo Finance (帶 Header 避免 Cloud IP 阻擋)
+    # 嘗試 2: Yahoo Finance (帶 Header 避免雲端 IP 阻擋)
     if df.empty:
         suffixes = [".TW", ".TWO"] if market_type == "TW" else [".TWO", ".TW"]
         headers = {
@@ -281,7 +272,7 @@ def main():
         search_btn = st.button("🔍 開始健檢", use_container_width=True)
 
     if search_btn or stock_input:
-        with st.spinner("🔍 正在取得台股最新數據並運算健檢評分..."):
+        with st.spinner("🔍 正在從自建總表解析並取得最新數據..."):
             resolved_code, display_name = resolve_taiwan_stock(stock_input, stock_dict)
             market_type = market_dict.get(resolved_code, "TW")
             
