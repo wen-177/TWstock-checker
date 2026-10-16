@@ -94,9 +94,13 @@ st.markdown("""
             min-height: 160px !important;
             margin-bottom: 8px;
         }
-        /* 7. 調整頂部 5 張指標卡片下方大數字的字型大小 */
-    div[data-testid="stColumn"] div[data-testid="stElementContainer"] h1 {
-        font-size: 10px !important; /* 預設數字通常很大，可在此自由修改像素，例如 28px 或 36px */
+       /* 7. 頂部看板大數字專屬樣式 (數值大小可自行修改，例如 30px 或 36px) */
+    .card-value {
+        font-size: 32px !important;
+        font-weight: bold !important;
+        margin-top: 8px !important;
+        margin-bottom: 0px !important;
+        color: var(--text-color);
     }
     }
 </style>
@@ -331,38 +335,38 @@ def main():
             with card_col1:
                 with st.container(border=True):
                     st.markdown('<p class="card-label">當前收盤價</p>', unsafe_allow_html=True)
-                    st.title(f"${latest['Close']:.2f}")
+                    st.markdown(f'<p class="card-value">${latest["Close"]:.2f}</p>', unsafe_allow_html=True)
 
             with card_col2:
                 with st.container(border=True):
                     st.markdown('<p class="card-label">健康度評分</p>', unsafe_allow_html=True)
                     if score >= 75:
-                        st.title(f"🟢 {score}分")
+                        st.markdown(f'<p class="card-value" style="color: #22c55e;">🟢 {score}分</p>', unsafe_allow_html=True)
                     elif score >= 50:
-                        st.title(f"🟡 {score}分")
+                        st.markdown(f'<p class="card-value" style="color: #eab308;">🟡 {score}分</p>', unsafe_allow_html=True)
                     else:
-                        st.title(f"🔴 {score}分")
+                        st.markdown(f'<p class="card-value" style="color: #ef4444;">🔴 {score}分</p>', unsafe_allow_html=True)
 
             with card_col3:
                 with st.container(border=True):
                     st.markdown(
-                        f'<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 4px;">'
-                        f'  <span class="card-label" style="margin: 0; font-size: 19px !important;">適合買進價 💡</span>'
-                        f'  <span style="font-size: 11px; font-weight: 600; color: #3b82f6; white-space: nowrap;">({buy_strategy})</span>'
+                        f'<div style="display: flex; justify-content: space-between; align-items: baseline;">'
+                        f'  <span class="card-label" style="margin: 0;">適合買進價 💡</span>'
+                        f'  <span style="font-size: 13px; font-weight: 600; color: #3b82f6;">({buy_strategy})</span>'
                         f'</div>', 
                         unsafe_allow_html=True
                     )
-                    st.title(f"${buy_price}")
+                    st.markdown(f'<p class="card-value">${buy_price}</p>', unsafe_allow_html=True)
 
             with card_col4:
                 with st.container(border=True):
                     st.markdown('<p class="card-label">建議停利價 🎯</p>', unsafe_allow_html=True)
-                    st.title(f"${take_profit}")
+                    st.markdown(f'<p class="card-value">${take_profit}</p>', unsafe_allow_html=True)
 
             with card_col5:
                 with st.container(border=True):
                     st.markdown('<p class="card-label">建議停損價 🛑</p>', unsafe_allow_html=True)
-                    st.title(f"${stop_loss}")
+                    st.markdown(f'<p class="card-value">${stop_loss}</p>', unsafe_allow_html=True)
 
             st.write("---")
 
