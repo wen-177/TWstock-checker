@@ -14,7 +14,6 @@ st.set_page_config(
 )
 
 # --- 全局 CSS 樣式 ---
-# --- 全局 CSS 樣式 ---
 st.markdown("""
 <style>
     /* 1. 調整主容器邊距 */
@@ -25,44 +24,34 @@ st.markdown("""
         padding-right: 2rem;
     }
     
-    /* 2. 讓主標題 (h1) 與副標題置中 */
-    h1 {
-        text-align: center;
-    }
-    .stCaptionContainer {
-        text-align: center;
-        display: flex;
-        justify-content: center;
-    }
-    
-    /* 3. 卡片等高與背景圓角 */
+    /* 2. 卡片等高與背景圓角 */
     div[data-testid="stColumn"] > div[data-testid="stVerticalBlock"] > div[data-testid="stElementContainer"] > div[data-testid="stBorderContainer"] {
         height: 100%;
-        min-height: 160px;
+        min-height: 220px;
         background-color: var(--background-secondary-color);
         border-radius: 12px;
-        padding: 12px;
+        padding: 16px;
     }
 
-    /* 4. 強制精準放大輸入框標題與文字（保留中） */
-    div[data-testid="stTextInput"] label p {
-        font-size: 20px !important;
+    /* 3. 頂部看板標題字體大小 */
+    .card-label {
+        font-size: 22px !important;
         font-weight: bold !important;
-        color: var(--text-color) !important;
-    }
-    
-    div[data-testid="stTextInput"] input {
-        font-size: 18px !important;
-        height: 48px !important;
+        margin-bottom: 4px !important;
+        line-height: 1.3 !important;
+        color: var(--text-color);
     }
 
-    /* 5. 確保按鈕高度與輸入框對齊（保留中） */
-    div[data-testid="stColumn"] button {
-        height: 48px !important;
-        margin-top: 2px !important;
+    /* 4. 健檢診斷細節文字大小 */
+    .reason-text {
+        font-size: 20px !important;
+        font-weight: 500 !important;
+        margin-bottom: 12px !important;
+        line-height: 1.6 !important;
+        color: var(--text-color);
     }
 
-    /* 6. 響應式手機排版修正 */
+    /* 5. 響應式手機排版修正 */
     @media (max-width: 768px) {
         .block-container {
             padding-left: 0.8rem;
@@ -72,16 +61,6 @@ st.markdown("""
             min-height: auto;
             margin-bottom: 10px;
         }
-    /*7. 🌟 精準控制 st.metric 的標題與數值大小 */
-    [data-testid="stMetricLabel"] {
-        font-size: 18px !important;    /* 調整「當前收盤價」、「健康度評分」的大小 */
-        font-weight: bold !important;  /* 設為粗體 */
-    }
-
-    [data-testid="stMetricValue"] {
-        font-size: 40px !important;    /* 調整下方數字的大小 */
-        font-weight: 800 !important;  /* 設為極粗體 */
-    }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -314,24 +293,39 @@ def main():
             
             with card_col1:
                 with st.container(border=True):
-                    st.metric(label="當前收盤價", value=f"${latest['Close']:.2f}")
+                    st.markdown('<p class="card-label">當前收盤價</p>', unsafe_allow_html=True)
+                    st.title(f"${latest['Close']:.2f}")
 
             with card_col2:
                 with st.container(border=True):
-                    status_text = f"🟢 {score}分" if score >= 75 else (f"🟡 {score}分" if score >= 50 else f"🔴 {score}分")
-                    st.metric(label="健康度評分", value=status_text)
+                    st.markdown('<p class="card-label">健康度評分</p>', unsafe_allow_html=True)
+                    if score >= 75:
+                        st.title(f"🟢 {score}分")
+                    elif score >= 50:
+                        st.title(f"🟡 {score}分")
+                    else:
+                        st.title(f"🔴 {score}分")
 
             with card_col3:
                 with st.container(border=True):
-                    st.metric(label=f"適合買進價 💡 ({buy_strategy})", value=f"${buy_price}")
+                    st.markdown(
+                        f'<div style="display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;">'
+                        f'  <p class="card-label" style="margin: 0;">適合買進價 💡</p>'
+                        f'  <span style="font-size: 14px; font-weight: 600; color: #3b82f6; opacity: 0.9;">({buy_strategy})</span>'
+                        f'</div>', 
+                        unsafe_allow_html=True
+                    )
+                    st.title(f"${buy_price}")
 
             with card_col4:
                 with st.container(border=True):
-                    st.metric(label="建議停利價 🎯", value=f"${take_profit}")
+                    st.markdown('<p class="card-label">建議停利價 🎯</p>', unsafe_allow_html=True)
+                    st.title(f"${take_profit}")
 
             with card_col5:
                 with st.container(border=True):
-                    st.metric(label="建議停損價 🛑", value=f"${stop_loss}")
+                    st.markdown('<p class="card-label">建議停損價 🛑</p>', unsafe_allow_html=True)
+                    st.title(f"${stop_loss}")
 
             st.write("---")
 
