@@ -96,7 +96,7 @@ st.markdown("""
         }
       /* 7. 頂部看板大數字專屬樣式 (字體放大 + 超粗體) */
     .card-value {
-        font-size: 60px !important;       /* 數字改大一點 (原本可能是 32px) */
+        font-size: 100px !important;       /* 數字改大一點 (原本可能是 32px) */
         font-weight: 800 !important;      /* 調整為極粗體 */
         margin-top: 6px !important;
         margin-bottom: 0px !important;
