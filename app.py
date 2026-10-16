@@ -14,6 +14,7 @@ st.set_page_config(
 )
 
 # --- 全局 CSS 樣式 ---
+# --- 全局 CSS 樣式 ---
 st.markdown("""
 <style>
     /* 1. 調整主容器邊距 */
@@ -22,6 +23,18 @@ st.markdown("""
         padding-bottom: 2rem;
         padding-left: 2rem;
         padding-right: 2rem;
+    }
+    
+    /* 🌟 新增：讓主標題 (h1) 置中 */
+    h1 {
+        text-align: center;
+    }
+
+    /* 🌟 新增：讓標題下方的說明文字置中 */
+    .stCaptionContainer {
+        text-align: center;
+        display: flex;
+        justify-content: center;
     }
     
     /* 2. 卡片等高與背景圓角 */
@@ -61,6 +74,23 @@ st.markdown("""
             min-height: auto;
             margin-bottom: 10px;
         }
+        /* 6. 強制精準放大輸入框標題與文字，絕不跑版 */
+    div[data-testid="stTextInput"] label p {
+        font-size: 20px !important; /* 可依喜好調整大小，例如 18px 或 20px */
+        font-weight: bold !important;
+        color: var(--text-color) !important;
+    }
+    
+    div[data-testid="stTextInput"] input {
+        font-size: 18px !important;
+        height: 48px !important; /* 確保輸入框高度與按鈕一致 */
+    }
+
+    /* 7. 確保右側按鈕高度與輸入框完美對齊 */
+    div[data-testid="stColumn"] button {
+        height: 48px !important;
+        margin-top: 2px !important; /* 微調垂直位置 */
+    }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -309,9 +339,9 @@ def main():
             with card_col3:
                 with st.container(border=True):
                     st.markdown(
-                        f'<div style="display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;">'
-                        f'  <p class="card-label" style="margin: 0;">適合買進價 💡</p>'
-                        f'  <span style="font-size: 14px; font-weight: 600; color: #3b82f6; opacity: 0.9;">({buy_strategy})</span>'
+                        f'<div style="display: flex; justify-content: space-between; align-items: baseline;">'
+                        f'  <span class="card-label" style="margin: 0;">適合買進價 💡</span>'
+                        f'  <span style="font-size: 13px; font-weight: 600; color: #3b82f6;">({buy_strategy})</span>'
                         f'</div>', 
                         unsafe_allow_html=True
                     )
