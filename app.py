@@ -97,32 +97,40 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# --- 1. 從自建 CSV 總表快速讀取股票字典 ---
+# --- 1. 從自建 CSV 總表快速讀取股票字典 (具備防呆與欄位自動清洗) ---
 @st.cache_data(ttl=86400, show_spinner=False)
 def load_all_taiwan_stocks():
     stock_dict = {}
     market_dict = {}
     
+    # 內建常備基礎清單（作為絕對不會失效的最後防線）
+    backup_stocks = {
+        "台積電": "2330", "鴻海": "2317", "聯發科": "2454", "廣達": "2382", 
+        "緯創": "3231", "技嘉": "2376", "長榮": "2603", "雷科": "6207",
+        "元大台灣50": "0050", "國泰永續高股息": "00878", "群益台灣精選高息": "00919"
+    }
+    for name, code in backup_stocks.items():
+        stock_dict[name] = code
+        stock_dict[code] = code
+        market_dict[code] = "TWO" if code == "6207" else "TW"
+
     try:
-        # 直接讀取上傳的 stock_list.csv (需包含「代號」與「名稱」欄位)
-        df_stocks = pd.read_csv("stock_list.csv", dtype=str)
-        for _, row in df_stocks.iterrows():
-            code = str(row['代號']).strip()
-            name = str(row['名稱']).strip()
-            if code and name:
-                stock_dict[name] = code
-                stock_dict[code] = code
-                # 簡單市場別判斷：上櫃/興櫃或特定區段歸類為 TWO，其餘為 TW
-                market_dict[code] = "TWO" if code.startswith(('3', '4', '5', '6', '8')) and len(code) == 4 else "TW"
-    except Exception:
-        # 讀取失敗時的基礎備援，確保系統不崩潰
-        backup_stocks = {
-            "台積電": "2330", "鴻海": "2317", "雷科": "6207", "聯發科": "2454", "元大台灣50": "0050"
-        }
-        for name, code in backup_stocks.items():
-            stock_dict[name] = code
-            stock_dict[code] = code
-            market_dict[code] = "TWO" if code == "6207" else "TW"
+        # 嘗試讀取 CSV (加入 utf-8-sig 以防有些 Excel 存成帶 BOM 的編碼導致亂碼)
+        df_stocks = pd.read_csv("stock_list.csv", dtype=str, encoding="utf-8-sig")
+        
+        # 自動去除欄位名稱可能帶有的空格（例如 "代號 " 變成 "代號"）
+        df_stocks.columns = df_stocks.columns.str.strip()
+        
+        if '代號' in df_stocks.columns and '名稱' in df_stocks.columns:
+            for _, row in df_stocks.iterrows():
+                code = str(row['代號']).strip()
+                name = str(row['名稱']).strip()
+                if code and name and code != 'nan' and name != 'nan':
+                    stock_dict[name] = code
+                    stock_dict[code] = code
+                    market_dict[code] = "TWO" if code.startswith(('3', '4', '5', '6', '8')) and len(code) == 4 else "TW"
+    except Exception as e:
+        pass  # 讀取失敗時會自動使用上方預設的 backup_stocks，不會導致崩潰
 
     return stock_dict, market_dict
 
