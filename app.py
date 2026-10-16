@@ -339,9 +339,9 @@ def main():
             with card_col3:
                 with st.container(border=True):
                     st.markdown(
-                        f'<div style="display: flex; justify-content: space-between; align-items: baseline;">'
-                        f'  <span class="card-label" style="margin: 0;">適合買進價 💡</span>'
-                        f'  <span style="font-size: 13px; font-weight: 600; color: #3b82f6;">({buy_strategy})</span>'
+                        f'<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 4px;">'
+                        f'  <span class="card-label" style="margin: 0; font-size: 19px !important;">適合買進價 💡</span>'
+                        f'  <span style="font-size: 11px; font-weight: 600; color: #3b82f6; white-space: nowrap;">({buy_strategy})</span>'
                         f'</div>', 
                         unsafe_allow_html=True
                     )
