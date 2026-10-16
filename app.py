@@ -335,17 +335,17 @@ def main():
             with card_col1:
                 with st.container(border=True):
                     st.markdown('<p class="card-label">當前收盤價</p>', unsafe_allow_html=True)
-                    st.markdown(f'<p class="card-value">${latest["Close"]:.2f}</p>', unsafe_allow_html=True)
+                    st.markdown(f'<p style="font-size: 36px !important; font-weight: 800 !important; margin: 6px 0 0 0;">${latest["Close"]:.2f}</p>', unsafe_allow_html=True)
 
             with card_col2:
                 with st.container(border=True):
                     st.markdown('<p class="card-label">健康度評分</p>', unsafe_allow_html=True)
                     if score >= 75:
-                        st.markdown(f'<p class="card-value" style="color: #22c55e;">🟢 {score}分</p>', unsafe_allow_html=True)
+                        st.markdown(f'<p style="font-size: 36px !important; font-weight: 800 !important; margin: 6px 0 0 0; color: #22c55e;">🟢 {score}分</p>', unsafe_allow_html=True)
                     elif score >= 50:
-                        st.markdown(f'<p class="card-value" style="color: #eab308;">🟡 {score}分</p>', unsafe_allow_html=True)
+                        st.markdown(f'<p style="font-size: 36px !important; font-weight: 800 !important; margin: 6px 0 0 0; color: #eab308;">🟡 {score}分</p>', unsafe_allow_html=True)
                     else:
-                        st.markdown(f'<p class="card-value" style="color: #ef4444;">🔴 {score}分</p>', unsafe_allow_html=True)
+                        st.markdown(f'<p style="font-size: 36px !important; font-weight: 800 !important; margin: 6px 0 0 0; color: #ef4444;">🔴 {score}分</p>', unsafe_allow_html=True)
 
             with card_col3:
                 with st.container(border=True):
@@ -356,17 +356,17 @@ def main():
                         f'</div>', 
                         unsafe_allow_html=True
                     )
-                    st.markdown(f'<p class="card-value">${buy_price}</p>', unsafe_allow_html=True)
+                    st.markdown(f'<p style="font-size: 36px !important; font-weight: 800 !important; margin: 6px 0 0 0;">${buy_price}</p>', unsafe_allow_html=True)
 
             with card_col4:
                 with st.container(border=True):
                     st.markdown('<p class="card-label">建議停利價 🎯</p>', unsafe_allow_html=True)
-                    st.markdown(f'<p class="card-value">${take_profit}</p>', unsafe_allow_html=True)
+                    st.markdown(f'<p style="font-size: 36px !important; font-weight: 800 !important; margin: 6px 0 0 0;">${take_profit}</p>', unsafe_allow_html=True)
 
             with card_col5:
                 with st.container(border=True):
                     st.markdown('<p class="card-label">建議停損價 🛑</p>', unsafe_allow_html=True)
-                    st.markdown(f'<p class="card-value">${stop_loss}</p>', unsafe_allow_html=True)
+                    st.markdown(f'<p style="font-size: 36px !important; font-weight: 800 !important; margin: 6px 0 0 0;">${stop_loss}</p>', unsafe_allow_html=True)
 
             st.write("---")
 
