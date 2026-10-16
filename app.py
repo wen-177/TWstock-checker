@@ -94,6 +94,10 @@ st.markdown("""
             min-height: 160px !important;
             margin-bottom: 8px;
         }
+        /* 7. 調整頂部 5 張指標卡片下方大數字的字型大小 */
+    div[data-testid="stColumn"] div[data-testid="stElementContainer"] h1 {
+        font-size: 28px !important; /* 預設數字通常很大，可在此自由修改像素，例如 28px 或 36px */
+    }
     }
 </style>
 """, unsafe_allow_html=True)
