@@ -54,6 +54,16 @@ st.markdown("""
         line-height: 1.3 !important;
         color: var(--text-color);
     }
+    /* 1. 調整「輸入股票名稱或代號：」文字標籤的字型大小 */
+    div[data-testid="stTextInput"] label p {
+        font-size: 20px !important;  /* 可自行調整像素大小，例如 18px 或 22px */
+        font-weight: bold !important; /* 如果希望粗體可保留此行 */
+    }
+
+    /* 2. 調整文字輸入框「裡面」使用者打字的字型大小 */
+    div[data-testid="stTextInput"] input {
+        font-size: 20px !important;  /* 可自行調整像素大小 */
+    }
 
     /* 4. 健檢診斷細節文字大小 */
     .reason-text {
@@ -74,23 +84,7 @@ st.markdown("""
             min-height: auto;
             margin-bottom: 10px;
         }
-    /* 6. 強制精準放大輸入框標題與文字，絕不跑版 */
-    div[data-testid="stTextInput"] label p {
-        font-size: 10px !important; /* 可依喜好調整大小，例如 18px 或 20px */
-        font-weight: bold !important;
-        color: var(--text-color) !important;
-    }
     
-    div[data-testid="stTextInput"] input {
-        font-size: 30x !important;
-        height: 48px !important; /* 確保輸入框高度與按鈕一致 */
-    }
-
-    /* 7. 確保右側按鈕高度與輸入框完美對齊 */
-    div[data-testid="stColumn"] button {
-        height: 48px !important;
-        margin-top: 2px !important; /* 微調垂直位置 */
-    }
     }
 </style>
 """, unsafe_allow_html=True)
