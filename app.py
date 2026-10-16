@@ -24,16 +24,6 @@ st.markdown("""
         padding-right: 2rem;
     }
     
-    /* 讓主標題 (h1) 與副標題置中 */
-    h1 {
-        text-align: center;
-    }
-    .stCaptionContainer {
-        text-align: center;
-        display: flex;
-        justify-content: center;
-    }
-    
     /* 2. 卡片等高與背景圓角 */
     div[data-testid="stColumn"] > div[data-testid="stVerticalBlock"] > div[data-testid="stElementContainer"] > div[data-testid="stBorderContainer"] {
         height: 100%;
@@ -61,24 +51,7 @@ st.markdown("""
         color: var(--text-color);
     }
 
-    /* 5. 強制精準放大輸入框標題與文字 */
-    div[data-testid="stTextInput"] label p {
-        font-size: 20px !important;
-        font-weight: bold !important;
-        color: var(--text-color) !important;
-    }
-    
-    div[data-testid="stTextInput"] input {
-        font-size: 18px !important;
-        height: 48px !important;
-    }
-
-    div[data-testid="stColumn"] button {
-        height: 48px !important;
-        margin-top: 2px !important;
-    }
-
-    /* 6. 響應式手機排版修正 */
+    /* 5. 響應式手機排版修正 */
     @media (max-width: 768px) {
         .block-container {
             padding-left: 0.8rem;
@@ -100,6 +73,7 @@ def load_all_taiwan_stocks():
     market_dict = {}
     
     try:
+        # 直接讀取上傳的 stock_list.csv (需包含「代號」與「名稱」欄位)
         df_stocks = pd.read_csv("stock_list.csv", dtype=str)
         for _, row in df_stocks.iterrows():
             code = str(row['代號']).strip()
@@ -107,8 +81,10 @@ def load_all_taiwan_stocks():
             if code and name:
                 stock_dict[name] = code
                 stock_dict[code] = code
+                # 簡單市場別判斷：上櫃/興櫃或特定區段歸類為 TWO，其餘為 TW
                 market_dict[code] = "TWO" if code.startswith(('3', '4', '5', '6', '8')) and len(code) == 4 else "TW"
     except Exception:
+        # 讀取失敗時的基礎備援，確保系統不崩潰
         backup_stocks = {
             "台積電": "2330", "鴻海": "2317", "雷科": "6207", "聯發科": "2454", "元大台灣50": "0050"
         }
@@ -153,6 +129,7 @@ def fetch_stock_data(stock_id, market_type="TW"):
     df = pd.DataFrame()
     source = None
 
+    # 嘗試 1: FinMind API Direct
     try:
         start_date = (pd.Timestamp.now() - pd.Timedelta(days=220)).strftime('%Y-%m-%d')
         url_fm = f"https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockPrice&data_id={stock_id}&start_date={start_date}"
@@ -170,6 +147,7 @@ def fetch_stock_data(stock_id, market_type="TW"):
     except Exception:
         pass
 
+    # 嘗試 2: Yahoo Finance (帶 Header 避免雲端 IP 阻擋)
     if df.empty:
         suffixes = [".TW", ".TWO"] if market_type == "TW" else [".TWO", ".TW"]
         headers = {
@@ -223,6 +201,7 @@ def calculate_indicators_and_health(df):
     score = 0
     reasons = []
 
+    # 1. 均線排列 (最大 40 分)
     if latest['Close'] > latest['MA5'] > latest['MA10'] > latest['MA20']:
         score += 40
         reasons.append("🟢 均線呈完美多頭排列，短中期趨勢強勁。")
@@ -235,6 +214,7 @@ def calculate_indicators_and_health(df):
     else:
         reasons.append("🔴 跌破短中期與季線均線，趨勢較弱，注意風險。")
 
+    # 2. RSI 動能 (最大 30 分)
     if 50 <= latest['RSI'] <= 70:
         score += 30
         reasons.append(f"🟢 RSI 指標位居黃金動能區 ({latest['RSI']:.1f})，買盤熱絡。")
@@ -248,6 +228,7 @@ def calculate_indicators_and_health(df):
         score += 20
         reasons.append(f"⚪ RSI 處於中性整理區 ({latest['RSI']:.1f})。")
 
+    # 3. KD 交叉 (最大 30 分)
     if prev['KD_K'] < prev['KD_D'] and latest['KD_K'] >= latest['KD_D']:
         score += 30
         reasons.append(f"🟢 KD 指標低檔黃金交叉 (K: {latest['KD_K']:.1f}, D: {latest['KD_D']:.1f})，轉折向上。")
@@ -258,6 +239,7 @@ def calculate_indicators_and_health(df):
         score += 5
         reasons.append(f"🔴 KD 指標死亡交叉或向下修正中 (K: {latest['KD_K']:.1f})。")
 
+    # 4. 交易價格建議邏輯
     if score >= 75:
         buy_price = latest['MA10']
         buy_strategy = "多頭強勢拉回 MA10"
@@ -327,9 +309,9 @@ def main():
             with card_col3:
                 with st.container(border=True):
                     st.markdown(
-                        f'<div style="display: flex; justify-content: space-between; align-items: baseline;">'
-                        f'  <span class="card-label" style="margin: 0;">適合買進價 💡</span>'
-                        f'  <span style="font-size: 13px; font-weight: 600; color: #3b82f6;">({buy_strategy})</span>'
+                        f'<div style="display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;">'
+                        f'  <p class="card-label" style="margin: 0;">適合買進價 💡</p>'
+                        f'  <span style="font-size: 14px; font-weight: 600; color: #3b82f6; opacity: 0.9;">({buy_strategy})</span>'
                         f'</div>', 
                         unsafe_allow_html=True
                     )
@@ -343,3 +325,42 @@ def main():
             with card_col5:
                 with st.container(border=True):
                     st.markdown('<p class="card-label">建議停損價 🛑</p>', unsafe_allow_html=True)
+                    st.title(f"${stop_loss}")
+
+            st.write("---")
+
+            # --- 中間雙欄對齊看板 ---
+            left_col, right_col = st.columns(2, gap="medium")
+
+            with left_col:
+                with st.container(border=True):
+                    st.subheader("📋 技術面體檢診斷")
+                    reasons_html = "".join([f'<p class="reason-text">{r}</p>' for r in reasons])
+                    st.markdown(reasons_html, unsafe_allow_html=True)
+                    st.caption(f"數據來源：{source} | 自動更新於市場每日收盤後")
+
+            with right_col:
+                with st.container(border=True):
+                    st.subheader("📈 近期 K 線與均線走勢 (含 MA60 季線)")
+                    chart_df = df.tail(60)
+                    
+                    fig = go.Figure()
+                    fig.add_trace(go.Candlestick(
+                        x=chart_df['Date'], open=chart_df['Open'], high=chart_df['High'],
+                        low=chart_df['Low'], close=chart_df['Close'], name="K線"
+                    ))
+                    fig.add_trace(go.Scatter(x=chart_df['Date'], y=chart_df['MA5'], line=dict(color='orange', width=1.5), name="MA5"))
+                    fig.add_trace(go.Scatter(x=chart_df['Date'], y=chart_df['MA10'], line=dict(color='cyan', width=1.5), name="MA10"))
+                    fig.add_trace(go.Scatter(x=chart_df['Date'], y=chart_df['MA20'], line=dict(color='magenta', width=1.5), name="MA20"))
+                    fig.add_trace(go.Scatter(x=chart_df['Date'], y=chart_df['MA60'], line=dict(color='green', width=2.0), name="MA60 季線"))
+                    
+                    fig.update_layout(
+                        margin=dict(l=10, r=10, t=10, b=10),
+                        xaxis_rangeslider_visible=False,
+                        height=350,
+                        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+                    )
+                    st.plotly_chart(fig, use_container_width=True)
+
+if __name__ == "__main__":
+    main()
