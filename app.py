@@ -82,7 +82,7 @@ st.markdown("""
     }
     
     div[data-testid="stTextInput"] input {
-        font-size: 18px !important;
+        font-size: 30x !important;
         height: 48px !important; /* 確保輸入框高度與按鈕一致 */
     }
 
