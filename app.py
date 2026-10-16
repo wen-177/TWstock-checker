@@ -74,7 +74,23 @@ st.markdown("""
             min-height: auto;
             margin-bottom: 10px;
         }
-   
+   /* 6. 強制精準放大輸入框標題與文字，絕不跑版 */
+    div[data-testid="stTextInput"] label p {
+        font-size: 20px !important; /* 可依喜好調整大小，例如 18px 或 20px */
+        font-weight: bold !important;
+        color: var(--text-color) !important;
+    }
+    
+    div[data-testid="stTextInput"] input {
+        font-size: 18px !important;
+        height: 48px !important; /* 確保輸入框高度與按鈕一致 */
+    }
+
+    /* 7. 確保右側按鈕高度與輸入框完美對齊 */
+    div[data-testid="stColumn"] button {
+        height: 48px !important;
+        margin-top: 2px !important; /* 微調垂直位置 */
+    }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -277,15 +293,12 @@ def main():
 
     stock_dict, market_dict = load_all_taiwan_stocks()
 
-    col_input, col_btn = st.columns([4, 1])
+   col_input, col_btn = st.columns([4, 1])
     with col_input:
-        # 使用自訂 HTML 標籤來完美掌控字體大小 (例如調整為 20px)
-        st.markdown('<p style="font-size: 24px; font-weight: bold; margin-bottom: 6px;">輸入股票名稱或代號：</p>', unsafe_allow_html=True)
-        stock_input = st.text_input("", value="2330", placeholder="例如：2330、台積電、雷科、0050", label_visibility="collapsed")
+        stock_input = st.text_input("輸入股票名稱或代號：", value="2330", placeholder="例如：2330、台積電、雷科、0050")
     with col_btn:
         st.write(" ")
-        # 調整按鈕與輸入框對齊
-        st.markdown('<div style="margin-top: 6px;"></div>', unsafe_allow_html=True)
+        st.write(" ")
         search_btn = st.button("🔍 開始健檢", use_container_width=True)
 
     if search_btn or stock_input:
@@ -326,9 +339,9 @@ def main():
             with card_col3:
                 with st.container(border=True):
                     st.markdown(
-                        f'<div style="display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;">'
-                        f'  <p class="card-label" style="margin: 0;">適合買進價 💡</p>'
-                        f'  <span style="font-size: 14px; font-weight: 600; color: #3b82f6; opacity: 0.9;">({buy_strategy})</span>'
+                        f'<div style="display: flex; justify-content: space-between; align-items: baseline;">'
+                        f'  <span class="card-label" style="margin: 0;">適合買進價 💡</span>'
+                        f'  <span style="font-size: 13px; font-weight: 600; color: #3b82f6;">({buy_strategy})</span>'
                         f'</div>', 
                         unsafe_allow_html=True
                     )
