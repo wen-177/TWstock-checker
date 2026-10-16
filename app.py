@@ -14,6 +14,7 @@ st.set_page_config(
 )
 
 # --- 全局 CSS 樣式 ---
+# --- 全局 CSS 樣式 ---
 st.markdown("""
 <style>
     /* 1. 調整主容器邊距 */
@@ -22,6 +23,18 @@ st.markdown("""
         padding-bottom: 2rem;
         padding-left: 2rem;
         padding-right: 2rem;
+    }
+    
+    /* 🌟 新增：讓主標題 (h1) 置中 */
+    h1 {
+        text-align: center;
+    }
+
+    /* 🌟 新增：讓標題下方的說明文字置中 */
+    .stCaptionContainer {
+        text-align: center;
+        display: flex;
+        justify-content: center;
     }
     
     /* 2. 卡片等高與背景圓角 */
