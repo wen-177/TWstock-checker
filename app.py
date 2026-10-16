@@ -79,7 +79,7 @@ st.markdown("""
     }
 
     [data-testid="stMetricValue"] {
-        font-size: 36px !important;    /* 調整下方數字的大小 */
+        font-size: 40px !important;    /* 調整下方數字的大小 */
         font-weight: 800 !important;  /* 設為極粗體 */
     }
     }
