@@ -54,6 +54,13 @@ st.markdown("""
         line-height: 1.3 !important;
         color: var(--text-color);
     }
+    /*🌟 新增：頂部看板數字的字型大小與樣式 */
+    .card-value {
+        font-size: 50px !important;  /* 數字大小（可隨需求自行修改像素，例如 32px、40px） */
+        font-weight: bold !important;  /* 讓數字粗體 */
+        margin-top: 4px !important;
+        color: var(--text-color);
+    }
     /* 1. 調整「輸入股票名稱或代號：」文字標籤的字型大小 */
     div[data-testid="stTextInput"] label p {
         font-size: 20px !important;  /* 可自行調整像素大小，例如 18px 或 22px */
@@ -84,13 +91,7 @@ st.markdown("""
             min-height: auto;
             margin-bottom: 10px;
         }
-    /* 6.🌟 新增：頂部看板數字的字型大小與樣式 */
-    .card-value {
-        font-size: 36px !important;  /* 數字大小（可自行修改像素，例如 32px 或 40px） */
-        font-weight: bold !important;
-        margin-top: 0px !important;
-        color: var(--text-color);
-    }
+    
     }
 </style>
 """, unsafe_allow_html=True)
