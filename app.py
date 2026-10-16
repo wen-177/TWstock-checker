@@ -94,11 +94,11 @@ st.markdown("""
             min-height: 160px !important;
             margin-bottom: 8px;
         }
-       /* 7. 頂部看板大數字專屬樣式 (數值大小可自行修改，例如 30px 或 36px) */
+      /* 7. 頂部看板大數字專屬樣式 (字體放大 + 超粗體) */
     .card-value {
-        font-size: 40px !important;
-        font-weight: bold !important;
-        margin-top: 8px !important;
+        font-size: 60px !important;       /* 數字改大一點 (原本可能是 32px) */
+        font-weight: 800 !important;      /* 調整為極粗體 */
+        margin-top: 6px !important;
         margin-bottom: 0px !important;
         color: var(--text-color);
     }
