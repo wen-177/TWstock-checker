@@ -334,39 +334,24 @@ def main():
             
             with card_col1:
                 with st.container(border=True):
-                    st.markdown('<p class="card-label">當前收盤價</p>', unsafe_allow_html=True)
-                    st.markdown(f'<p style="font-size: 36px !important; font-weight: 800 !important; margin: 6px 0 0 0;">${latest["Close"]:.2f}</p>', unsafe_allow_html=True)
+                    st.metric(label="當前收盤價", value=f"${latest['Close']:.2f}")
 
             with card_col2:
                 with st.container(border=True):
-                    st.markdown('<p class="card-label">健康度評分</p>', unsafe_allow_html=True)
-                    if score >= 75:
-                        st.markdown(f'<p style="font-size: 36px !important; font-weight: 800 !important; margin: 6px 0 0 0; color: #22c55e;">🟢 {score}分</p>', unsafe_allow_html=True)
-                    elif score >= 50:
-                        st.markdown(f'<p style="font-size: 36px !important; font-weight: 800 !important; margin: 6px 0 0 0; color: #eab308;">🟡 {score}分</p>', unsafe_allow_html=True)
-                    else:
-                        st.markdown(f'<p style="font-size: 36px !important; font-weight: 800 !important; margin: 6px 0 0 0; color: #ef4444;">🔴 {score}分</p>', unsafe_allow_html=True)
+                    status_text = f"🟢 {score}分" if score >= 75 else (f"🟡 {score}分" if score >= 50 else f"🔴 {score}分")
+                    st.metric(label="健康度評分", value=status_text)
 
             with card_col3:
                 with st.container(border=True):
-                    st.markdown(
-                        f'<div style="display: flex; justify-content: space-between; align-items: baseline;">'
-                        f'  <span class="card-label" style="margin: 0;">適合買進價 💡</span>'
-                        f'  <span style="font-size: 13px; font-weight: 600; color: #3b82f6;">({buy_strategy})</span>'
-                        f'</div>', 
-                        unsafe_allow_html=True
-                    )
-                    st.markdown(f'<p style="font-size: 36px !important; font-weight: 800 !important; margin: 6px 0 0 0;">${buy_price}</p>', unsafe_allow_html=True)
+                    st.metric(label=f"適合買進價 💡 ({buy_strategy})", value=f"${buy_price}")
 
             with card_col4:
                 with st.container(border=True):
-                    st.markdown('<p class="card-label">建議停利價 🎯</p>', unsafe_allow_html=True)
-                    st.markdown(f'<p style="font-size: 36px !important; font-weight: 800 !important; margin: 6px 0 0 0;">${take_profit}</p>', unsafe_allow_html=True)
+                    st.metric(label="建議停利價 🎯", value=f"${take_profit}")
 
             with card_col5:
                 with st.container(border=True):
-                    st.markdown('<p class="card-label">建議停損價 🛑</p>', unsafe_allow_html=True)
-                    st.markdown(f'<p style="font-size: 36px !important; font-weight: 800 !important; margin: 6px 0 0 0;">${stop_loss}</p>', unsafe_allow_html=True)
+                    st.metric(label="建議停損價 🛑", value=f"${stop_loss}")
 
             st.write("---")
 
