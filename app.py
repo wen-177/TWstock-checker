@@ -267,8 +267,9 @@ def calculate_indicators_and_health(df):
     else:
         score += 5
         reasons.append(f"🔴 KD 指標死亡交叉或向下修正中 (K: {latest['KD_K']:.1f})。")
+# 4. 交易價格建議邏輯
+    current_close = latest['Close']
 
-    # 4. 交易價格建議邏輯
     if score >= 75:
         buy_price = latest['MA10']
         buy_strategy = "多頭強勢拉回 MA10"
@@ -278,6 +279,12 @@ def calculate_indicators_and_health(df):
     else:
         buy_price = latest['MA60'] if not pd.isna(latest['MA60']) else latest['MA20']
         buy_strategy = "季線大支撐 (MA60)"
+
+    # 🛡️ 防呆機制：如果計算出的買進價大於或等於當前收盤價 (代表股價已跌破該均線)
+    if buy_price >= current_close:
+        # 改以當前收盤價打 97 折作為合理承接價，避免出現買進價高於現價的狀況
+        buy_price = current_close * 0.97
+        buy_strategy = "現價回檔 3% 承接"
 
     take_profit = latest['Close'] * 1.10
     stop_loss = buy_price * 0.93
