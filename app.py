@@ -151,7 +151,7 @@ def resolve_taiwan_stock(user_input, stock_dict):
     return clean_input, clean_input
 
 
-# --- 3. 股票歷史數據抓取 (FinMind + Yahoo Finance 雙源防護) ---
+# --- 3.股票歷史數據抓取 (雙向防護升級版) ---
 @st.cache_data(ttl=3600, show_spinner=False)
 def fetch_stock_data(stock_id, market_type="TW"):
     stock_id = str(stock_id).strip()
@@ -176,9 +176,9 @@ def fetch_stock_data(stock_id, market_type="TW"):
     except Exception:
         pass
 
-    # 嘗試 2: Yahoo Finance (帶 Header 避免雲端 IP 阻擋)
+    # 嘗試 2: Yahoo Finance (改為直接輪流測試 .TW 與 .TWO，不再依賴預判)
     if df.empty:
-        suffixes = [".TW", ".TWO"] if market_type == "TW" else [".TWO", ".TW"]
+        suffixes = [".TW", ".TWO"]
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
         }
