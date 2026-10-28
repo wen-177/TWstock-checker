@@ -301,7 +301,7 @@ def main():
 
     col_input, col_btn = st.columns([4, 1])
     with col_input:
-        stock_input = st.text_input("輸入股票名稱或代號：", value="2330", placeholder="例如：2330、台積電、雷科、0050")
+        stock_input = st.text_input("輸入股票名稱或代號：", value="", placeholder="例如：2330、台積電、雷科、0050")
     with col_btn:
         st.write(" ")
         st.write(" ")
